@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "Personal Finance Tracker API",
+    "description": "Complete collection for the Personal Finance Tracker backend. Set the {{baseUrl}} variable (default http://localhost:5000). The Login request automatically stores the JWT into {{token}} for all other requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"new.user@example.com\",\n  \"password\": \"Secret@123\",\n  \"role\": \"user\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.data && res.data.token) {",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "  pm.test('token saved', () => pm.expect(res.data.token).to.be.a('string'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@finance.com\",\n  \"password\": \"User@123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/me" }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "List (filter/sort/paginate)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/transactions?page=1&limit=10&sortBy=transaction_date&order=desc"
+          }
+        },
+        {
+          "name": "Get by id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/transactions/1" }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/transactions",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"expense\",\n  \"amount\": 42.50,\n  \"category_id\": 5,\n  \"description\": \"Lunch\",\n  \"transaction_date\": \"2026-07-30\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/transactions/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 99.99,\n  \"description\": \"Updated description\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/transactions/1" }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        { "name": "List", "request": { "method": "GET", "url": "{{baseUrl}}/api/categories" } },
+        { "name": "Get by id", "request": { "method": "GET", "url": "{{baseUrl}}/api/categories/1" } },
+        {
+          "name": "Create (admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/categories",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Subscriptions\",\n  \"type\": \"expense\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update (admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/categories/1",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Salary Income\"\n}" }
+          }
+        },
+        {
+          "name": "Delete (admin)",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/categories/1" }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        { "name": "Summary", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/summary" } },
+        { "name": "Totals", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/totals" } },
+        { "name": "Monthly trend", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/monthly-trend?year=2026" } },
+        { "name": "Yearly trend", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/yearly-trend" } },
+        { "name": "Category breakdown", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/category-breakdown?type=expense" } },
+        { "name": "Income vs expense", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/income-vs-expense" } }
+      ]
+    },
+    {
+      "name": "Users (admin)",
+      "item": [
+        { "name": "List users", "request": { "method": "GET", "url": "{{baseUrl}}/api/users?page=1&limit=20" } },
+        { "name": "Get user", "request": { "method": "GET", "url": "{{baseUrl}}/api/users/2" } },
+        {
+          "name": "Change role",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/users/2/role",
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"read-only\"\n}" }
+          }
+        },
+        { "name": "Delete user", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/users/3" } }
+      ]
+    }
+  ]
+}

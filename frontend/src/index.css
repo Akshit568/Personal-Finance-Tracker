@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* Design tokens — chart ink/surface colors that swap with the theme. */
+/* Validated against the data-viz reference palette.                  */
+/* ------------------------------------------------------------------ */
+:root {
+  --surface: #ffffff;
+  --surface-2: #f9f9f7;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --income: #1baf7a;
+  --expense: #e34948;
+  --brand: #2a78d6;
+  color-scheme: light;
+}
+
+:root.dark {
+  --surface: #1a1a19;
+  --surface-2: #0d0d0d;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --income: #199e70;
+  --expense: #e66767;
+  --brand: #3987e5;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased dark:bg-[#0d0d0d] dark:text-slate-100;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Focus ring consistency */
+:focus-visible {
+  @apply outline-none ring-2 ring-brand-500/60 ring-offset-1 ring-offset-white dark:ring-offset-[#0d0d0d];
+}
+
+/* Subtle custom scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-300 dark:bg-slate-700;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Tabular numbers for figures that must align */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
