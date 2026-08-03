@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import clsx from 'clsx';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
 /* Button                                                             */
@@ -96,9 +97,42 @@ export function Field({ label, error, children, hint, required }) {
 const controlBase =
   'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-brand-500 disabled:cursor-not-allowed disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:disabled:bg-slate-900';
 
-export function Input({ className, ...props }) {
-  return <input className={clsx(controlBase, 'h-10', className)} {...props} />;
+// export function Input({ className, ...props }) {
+//   return <input className={clsx(controlBase, 'h-10', className)} {...props} />;
+// }
+export function Input({ className, type = 'text', ...props }) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPassword = type === 'password';
+
+  return (
+    <div className="relative">
+      <input
+        {...props}
+        type={isPassword ? (showPassword ? 'text' : 'password') : type}
+        className={clsx(
+          controlBase,
+          'h-10',
+          isPassword && 'pr-10',
+          className
+        )}
+      />
+
+      {isPassword && (
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          className="absolute inset-y-0 right-3 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200"
+          tabIndex={-1}
+        >
+          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      )}
+    </div>
+  );
 }
+
+
 
 export function Select({ className, children, ...props }) {
   return (
